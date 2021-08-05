@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 
@@ -15,38 +13,24 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  var _postJson = [];
   final url = 'https://jsonplaceholder.typicode.com/posts';
 
-  void fetchPosts() async {
+  void postData() async {
     try {
-      final response = await get(Uri.parse(url));
-      final jsonData = jsonDecode(response.body) as List;
+      final response = await post(Uri.parse(url),
+          body: {"title": "anything", "body": "Post body", "userId": "1"});
 
-      setState(() {
-        _postJson = jsonData;
-      });
-    } catch (err) {}
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    fetchPosts();
+      print(response.body);
+    } catch (er) {}
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        body: ListView.builder(
-            itemCount: _postJson.length,
-            itemBuilder: (context, i) {
-              final post = _postJson[i];
-              return Text("Title ${post['title']}\n Body: ${post["body"]}\n");
-            }),
-      ),
+          body: Center(
+        child: ElevatedButton(onPressed: postData, child: Text('Send Post')),
+      )),
     );
   }
 }
